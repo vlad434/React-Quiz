@@ -1,6 +1,9 @@
 import { useEffect, useReducer } from "react";
 import Header from "./Header";
 import MainSection from "./MainSection";
+import Loader from "./Loader";
+import Error from "./Error";
+import StartScreen from "./StartScreen";
 
 const initialState = {
   questions: [],
@@ -20,24 +23,25 @@ const reducer = (state, action) => {
 };
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
 
-  const { questions, status } = state;
+  const numOfQuestions = questions.length;
 
   useEffect(() => {
     fetch("http://localhost:8000/questions")
       .then((response) => response.json())
       .then((data) => dispatch({ type: "dataReceived", payload: data }))
       .catch(() => dispatch({ type: "dataFailed" }));
-  });
+  }, []);
 
   return (
     <div className="app">
       <Header />
 
       <MainSection>
-        <p>1/15</p>
-        <p>Question?</p>
+        {status === "loading" && <Loader />}
+        {status === "error" && <Error />}
+        {status === "ready" && <StartScreen numOfQuestions={numOfQuestions} />}
       </MainSection>
     </div>
   );
