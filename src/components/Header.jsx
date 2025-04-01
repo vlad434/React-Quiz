@@ -1,7 +1,6 @@
 function Header() {
   return (
-    <header className='app-header'>
-      <img src='logo512.png' alt='React logo' />
+    <header className="flex justify-center items-center mb-5">
       <h1>The React Quiz</h1>
     </header>
   );
