@@ -1,6 +1,9 @@
-import React from "react";
+import { StartScreenProps } from "../types/types";
 
-export default function StartScreen({ numOfQuestions, dispatch }) {
+const StartScreen: React.FC<StartScreenProps> = ({
+  numOfQuestions,
+  dispatch,
+}) => {
   return (
     <div className="start">
       <h2>Welcome to the React Quizz!</h2>
@@ -13,4 +16,6 @@ export default function StartScreen({ numOfQuestions, dispatch }) {
       </button>
     </div>
   );
-}
+};
+
+export default StartScreen;

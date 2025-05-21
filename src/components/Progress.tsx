@@ -1,12 +1,13 @@
 import React from "react";
+import { ProgressProps } from "../types/types";
 
-export default function Progress({
+const Progress: React.FC<ProgressProps> = ({
   index,
   numOfQuestions,
   points,
   maxPoints,
   answer,
-}) {
+}) => {
   return (
     <header className="progress">
       <progress max={numOfQuestions} value={index + Number(answer !== null)} />
@@ -20,4 +21,6 @@ export default function Progress({
       </p>
     </header>
   );
-}
+};
+
+export default Progress;

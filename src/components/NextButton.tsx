@@ -1,13 +1,15 @@
+import { NextButtonProps } from "../types/types";
 import React from "react";
 
-export default function NextButton({
+const NextButton: React.FC<NextButtonProps> = ({
   dispatch,
   answer,
   index,
   numOfQuestions,
-}) {
+}) => {
   if (answer === null) return null;
-  if (index < numOfQuestions - 1)
+
+  if (index < numOfQuestions - 1) {
     return (
       <button
         className="btn btn-ui"
@@ -16,8 +18,9 @@ export default function NextButton({
         Next
       </button>
     );
+  }
 
-  if (index === numOfQuestions - 1)
+  if (index === numOfQuestions - 1) {
     return (
       <button
         className="btn btn-ui"
@@ -26,4 +29,9 @@ export default function NextButton({
         Finish
       </button>
     );
-}
+  }
+
+  return null;
+};
+
+export default NextButton;

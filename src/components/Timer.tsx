@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { TimerProps } from "../types/types";
 
-export default function Timer({ dispatch, remainingSeconds }) {
+const Timer: React.FC<TimerProps> = ({ dispatch, remainingSeconds }) => {
   const mins = Math.floor(remainingSeconds / 60);
   const seconds = remainingSeconds % 60;
   useEffect(() => {
@@ -20,4 +21,6 @@ export default function Timer({ dispatch, remainingSeconds }) {
       {seconds}
     </div>
   );
-}
+};
+
+export default Timer;

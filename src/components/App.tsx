@@ -10,12 +10,13 @@ import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
 import Timer from "./Timer";
 import Footer from "./Footer";
+import { State, Action, QuestionType } from "../types/types";
 
 const SECONDS_PER_QUESTION = 30;
 
-const initialState = {
+const initialState: State = {
   questions: [],
-  status: "loading", // 'loading' , 'error' , 'ready' , 'active' , 'finished'
+  status: "loading",
   index: 0,
   answer: null,
   points: 0,
@@ -23,39 +24,42 @@ const initialState = {
   remainingSeconds: null,
 };
 
-const reducer = (state, action) => {
+// Reducer
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "dataReceived":
       return { ...state, questions: action.payload, status: "ready" };
+
     case "dataFailed":
       return { ...state, status: "error" };
+
     case "start":
       return {
         ...state,
         status: "active",
         remainingSeconds: state.questions.length * SECONDS_PER_QUESTION,
       };
-    case "newAnswer": {
-      const question = state.questions.at(state.index);
 
+    case "newAnswer": {
+      const question = state.questions[state.index];
+      const isCorrect = action.payload === question.correctOption;
       return {
         ...state,
         answer: action.payload,
-        points:
-          action.payload === question.correctOption
-            ? state.points + question.points
-            : state.points,
+        points: isCorrect ? state.points + question.points : state.points,
       };
     }
+
     case "nextQuestion":
       return { ...state, index: state.index + 1, answer: null };
+
     case "finish":
       return {
         ...state,
         status: "finished",
-        highScore:
-          state.points > state.highScore ? state.points : state.highScore,
+        highScore: Math.max(state.highScore, state.points),
       };
+
     case "restart":
       return {
         ...initialState,
@@ -63,37 +67,43 @@ const reducer = (state, action) => {
         highScore: state.highScore,
         status: "ready",
       };
+
     case "tick":
       return {
         ...state,
-        remainingSeconds: state.remainingSeconds - 1,
-        status: state.remainingSeconds === 0 ? "finished" : state.status,
+        remainingSeconds: state.remainingSeconds! - 1,
+        status:
+          state.remainingSeconds && state.remainingSeconds <= 1
+            ? "finished"
+            : state.status,
       };
+
     default:
       throw new Error("Action unknown");
   }
 };
 
-export default function App() {
+const App = () => {
   const [
     { questions, status, index, answer, points, highScore, remainingSeconds },
     dispatch,
   ] = useReducer(reducer, initialState);
 
   const numOfQuestions = questions.length;
-  const maxPoints = questions.reduce((prev, curr) => prev + curr.points, 0);
+  const maxPoints = questions.reduce((acc, cur) => acc + cur.points, 0);
 
   useEffect(() => {
     fetch("http://localhost:8000/questions")
-      .then((response) => response.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
+      .then((res) => res.json())
+      .then((data: QuestionType[]) =>
+        dispatch({ type: "dataReceived", payload: data })
+      )
       .catch(() => dispatch({ type: "dataFailed" }));
   }, []);
 
   return (
     <div className="app">
       <Header />
-
       <MainSection>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
@@ -115,7 +125,7 @@ export default function App() {
               answer={answer}
             />
             <Footer>
-              <Timer dispatch={dispatch} remainingSeconds={remainingSeconds} />
+              <Timer dispatch={dispatch} remainingSeconds={remainingSeconds!} />
               <NextButton
                 dispatch={dispatch}
                 answer={answer}
@@ -136,4 +146,6 @@ export default function App() {
       </MainSection>
     </div>
   );
-}
+};
+
+export default App;

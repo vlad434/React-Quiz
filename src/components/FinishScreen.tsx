@@ -1,14 +1,21 @@
-import React from "react";
+import { Action } from "../types/types";
 
-export default function FinishScreen({
+type FinishScreenProps = {
+  points: number;
+  maxPoints: number;
+  highScore: number;
+  dispatch: React.Dispatch<Action>;
+};
+
+const FinishScreen: React.FC<FinishScreenProps> = ({
   points,
   maxPoints,
   highScore,
   dispatch,
-}) {
+}) => {
   const percentage = (points / maxPoints) * 100;
 
-  let emoji;
+  let emoji: string | undefined;
   if (percentage === 100) emoji = "🥳";
   if (percentage >= 80 && percentage < 100) emoji = "😎";
   if (percentage >= 50 && percentage < 80) emoji = "😐";
@@ -31,4 +38,6 @@ export default function FinishScreen({
       </button>
     </>
   );
-}
+};
+
+export default FinishScreen;

@@ -1,6 +1,7 @@
 import React from "react";
+import { OptionsProps } from "../types/types";
 
-export default function Options({ question, dispatch, answer }) {
+const Options: React.FC<OptionsProps> = ({ question, dispatch, answer }) => {
   const hasAnswered = answer !== null;
   return (
     <div className="options">
@@ -22,4 +23,6 @@ export default function Options({ question, dispatch, answer }) {
       ))}
     </div>
   );
-}
+};
+
+export default Options;
